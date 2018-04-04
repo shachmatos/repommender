@@ -1,0 +1,78 @@
+@import '../../sass/_mixins.scss';
+
+.channel {
+  margin: 5px auto;
+  border: 1px solid rgba(0,0,0,0.8);
+  border-radius: 15px;
+
+  .channel-title {
+    font-size: 24px;
+    padding: 5px;
+    border-bottom: 1px solid rgba(0,0,0,0.8);
+  }
+
+  .channel-content {
+    display:flex;
+    flex-wrap: nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+
+  .repository {
+    // Modifiers
+    &:hover {
+      background-color: #97bcff;
+      transition: background-color 200ms ease-in-out;
+
+      .repository-button a {
+        //color: #000000;
+        //background-color: #ffffff;
+        //transition: background-color 200ms ease-in-out;
+      }
+    }
+
+    // Basic
+    box-sizing: border-box;
+    position: relative;
+    width: 230px;
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid black;
+    box-shadow: 1px 1px 0 black;
+    background-color: #ffffff;
+
+    // mixins
+    @include flex-item(250px, 0, 0);
+    @include border-radius(15px);
+
+    .repository-body {
+      height: 200px;
+      max-height: 200px;
+      overflow: auto;
+      .repository-title {
+        padding: 0 5px;
+        text-align: center;
+      }
+
+      .repository-description {
+        padding: 0 5px;
+      }
+    }
+
+    .repository-button {
+      text-align: center;
+
+      a {
+        display: block;
+        @include border-radius(15px);
+      }
+    }
+  }
+}
+
+
+
+
+
+
