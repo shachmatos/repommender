@@ -2,13 +2,11 @@
 
 .channel {
   margin: 5px auto;
-  border: 1px solid rgba(0,0,0,0.8);
-  border-radius: 15px;
 
   .channel-title {
     font-size: 24px;
+    margin: 5px;
     padding: 5px;
-    border-bottom: 1px solid rgba(0,0,0,0.8);
   }
 
   .channel-content {
@@ -37,17 +35,15 @@
     position: relative;
     width: 230px;
     margin: 5px;
-    padding: 5px;
-    border: 1px solid black;
-    box-shadow: 1px 1px 0 black;
-    background-color: #ffffff;
+    padding: 20px;
+    background-color: rgba(200, 200, 200, 0.5);
 
     // mixins
-    @include flex-item(250px, 0, 0);
     @include border-radius(15px);
+    @include flex-item(250px, 0, 0);
 
     .repository-body {
-      height: 200px;
+      min-height: 150px;
       max-height: 200px;
       overflow: auto;
       .repository-title {
@@ -65,7 +61,6 @@
 
       a {
         display: block;
-        @include border-radius(15px);
       }
     }
   }

@@ -9,6 +9,7 @@ import { HomeInfoComponent } from './home-info/home-info.component';
 import { ChannelComponent } from './channel/channel.component';
 import { ChannelService } from "./channel.service";
 import { HttpClientModule } from "@angular/common/http";
+import { BsDropdownModule, ModalModule } from "ngx-bootstrap";
 
 
 const myRoots: Routes = [{
@@ -28,7 +29,12 @@ const myRoots: Routes = [{
   imports: [
     BrowserModule,
     RouterModule.forRoot(myRoots),
-    HttpClientModule
+    HttpClientModule,
+    ModalModule,
+    BsDropdownModule
+  ],
+  exports: [
+    BsDropdownModule
   ],
   providers: [
     ChannelService
