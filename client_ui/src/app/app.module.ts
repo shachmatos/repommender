@@ -7,7 +7,8 @@ import { HomeComponent } from './home/home.component';
 import { JumbotronComponent } from './jumbotron/jumbotron.component';
 import { HomeInfoComponent } from './home-info/home-info.component';
 import { ChannelComponent } from './channel/channel.component';
-import {ChannelService} from "./channel.service";
+import { ChannelService } from "./channel.service";
+import { HttpClientModule } from "@angular/common/http";
 
 
 const myRoots: Routes = [{
@@ -26,7 +27,8 @@ const myRoots: Routes = [{
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(myRoots)
+    RouterModule.forRoot(myRoots),
+    HttpClientModule
   ],
   providers: [
     ChannelService

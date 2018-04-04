@@ -13,7 +13,9 @@ export class ChannelComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.channels = this.channelService.getChannels();
+    this.channelService.getChannels().subscribe(data => {
+      this.channels = data['channels'] as Object[];
+    });
   }
 
   clearChannels() : void {
