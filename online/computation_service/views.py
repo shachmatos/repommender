@@ -13,6 +13,16 @@ def fetch_recommendation_channels(request, user_id):
                         "name": "chinese-independent-developer",
                         "url": "https://github.com/1c7/chinese-independent-developer",
                         "tags": ["indie", "indie-developer", "china"],
+                    },
+                    {
+                        "name": "chinese-independent-developer 2",
+                        "url": "https://github.com/1c7/chinese-independent-developer",
+                        "tags": ["indie", "indie-developer", "china"],
+                    },
+                    {
+                        "name": "chinese-independent-developer 3",
+                        "url": "https://github.com/1c7/chinese-independent-developer",
+                        "tags": ["indie", "indie-developer", "china"],
                     }
                 ],
             },
