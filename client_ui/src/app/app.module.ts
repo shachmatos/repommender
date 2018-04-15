@@ -9,7 +9,10 @@ import { HomeInfoComponent } from './home-info/home-info.component';
 import { ChannelComponent } from './channel/channel.component';
 import { ChannelService } from "./channel.service";
 import { HttpClientModule } from "@angular/common/http";
-import { BsDropdownModule, ModalModule } from "ngx-bootstrap";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {ForbiddenValidatorDirective} from "./shared/forbidden-name.directive";
+import {LoginService} from "./login.service";
+import {CookieService} from "ngx-cookie-service";
 
 
 const myRoots: Routes = [{
@@ -24,21 +27,24 @@ const myRoots: Routes = [{
     HomeComponent,
     JumbotronComponent,
     HomeInfoComponent,
-    ChannelComponent
+    ChannelComponent,
+    ForbiddenValidatorDirective
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(myRoots),
     HttpClientModule,
-    ModalModule,
-    BsDropdownModule
+    FormsModule,
   ],
   exports: [
-    BsDropdownModule
   ],
   providers: [
-    ChannelService
+    ChannelService,
+    LoginService,
+    CookieService
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  test : string = "hello";
+}

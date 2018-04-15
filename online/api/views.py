@@ -24,8 +24,7 @@ def get_access_token(request, code):
 
     token = json.loads(res.content)
 
-    if res.status_code == 200:
+    if res.status_code == 200 and 'access_token' in token.keys():
         g = Github(token['access_token'])
-        g.get_user()
 
     return HttpResponse(res)
