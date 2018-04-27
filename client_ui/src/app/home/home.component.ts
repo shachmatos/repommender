@@ -15,37 +15,35 @@ export class HomeComponent implements OnInit {
   actionUrl : string = "https://github.com/login/oauth/authorize?client_id=" + Config.repommender_config.github_client_id + "&allow_signup=true";
   actionText : string = "Login with Github";
 
-  testName: number;
-
 
   @Output() onAuthentication : EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private loginService : LoginService, private route: ActivatedRoute) {
-    this.loginService.loginStatusChange.subscribe(val => {
-      this.authenticated = val;
-    });
+
   }
 
   ngOnInit() {
-    if (this.loginService.checkLogin()) {
-      this.authenticated = true;
-    } else {
-      this.route.queryParams.subscribe(params => {
-        if (params['code']) {
-          this.loginService.login(params['code']);
-        }
-      });
-    }
-    // this.authenticated = true;
+    if (this.loginService.getUser() != null) this.authenticated = true;
+    // this.loginService.checkLogin();
+    this.loginService.tokenValidated.subscribe(status => {this.onLoginStatusChange(status);});
+    this.loginService.loginStatusChange.subscribe(status => {this.onLoginStatusChange(status);});
+  }
+
+  private onLoginSuccess() {
+    this.authenticated = true;
+  }
+
+  private onLogout() {
+    this.authenticated = false;
+  }
+
+  private onLoginStatusChange(status: boolean) {
+    this.authenticated = status;
   }
 
   setAuthenticated(val: boolean) {
     this.authenticated = val;
     this.onAuthentication.emit(val);
-  }
-
-  checkToken() {
-
   }
 
 }

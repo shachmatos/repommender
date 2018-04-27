@@ -13,12 +13,22 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ForbiddenValidatorDirective} from "./shared/forbidden-name.directive";
 import {LoginService} from "./login.service";
 import {CookieService} from "ngx-cookie-service";
+import { UserPreferencesComponent } from './user-preferences/user-preferences.component';
+import {TagInputModule} from "ngx-chips";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {UserService} from "./user.service";
 
 
-const myRoots: Routes = [{
-  path: '',
-  component: HomeComponent
-}];
+const myRoots: Routes = [
+  {
+    path: '',
+    component: HomeComponent
+  },
+  {
+    path: 'preferences',
+    component: UserPreferencesComponent
+  }
+];
 
 @NgModule({
   declarations: [
@@ -28,23 +38,31 @@ const myRoots: Routes = [{
     JumbotronComponent,
     HomeInfoComponent,
     ChannelComponent,
-    ForbiddenValidatorDirective
+    ForbiddenValidatorDirective,
+    UserPreferencesComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot(myRoots),
     HttpClientModule,
     FormsModule,
+    TagInputModule
   ],
   exports: [
   ],
   providers: [
     ChannelService,
     LoginService,
-    CookieService
+    CookieService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  test : string = "hello";
+  // static loginService: LoginService;
+  //
+  // static getLoginService() {
+  //   return this.loginService;
+  // }
 }

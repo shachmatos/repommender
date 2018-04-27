@@ -1,17 +1,23 @@
-import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Injectable, Optional} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import { Config } from "./config";
+import {User} from "./user";
 
 @Injectable()
 export class ChannelService {
 
   constructor(private http : HttpClient) { }
 
-  public getChannels() {
-
-    const headers = new HttpHeaders().set("Accept", "application/json");
-
-    return this.http.get('http://' + Config.repommender_config.server_url + ':' + Config.repommender_config.server_port + '/service/1/fetch_channels');
+  public getChannels(user: User) {
+    const url = 'http://' + Config.repommender_config.server_url + ':' + Config.repommender_config.server_port + '/service/1/fetch_channels';
+    let headers = new HttpHeaders().set("Accept", "application/json");
+    let params = new HttpParams()
+      .append('access_token', user.access_token)
+      .append('user_id', user.id.toString())
+    return this.http.get(url,{
+      headers: headers,
+      params: params
+    });
   }
 
 }
