@@ -2,6 +2,10 @@ from django.db import models
 from django.utils.datetime_safe import datetime
 
 
+# class Channel (models.Model):
+#     title: models.CharField(max_length=100)
+
+
 class Developer (models.Model):
     id: models.IntegerField(primary_key=True)
     name: models.CharField(unique=True, max_length=50)

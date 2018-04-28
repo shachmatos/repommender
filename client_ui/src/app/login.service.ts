@@ -119,8 +119,6 @@ export class LoginService {
     result.subscribe(
       data => {
         this.user = new User(data['id'], token, data['login'], data['name']);
-        console.log(this.user);
-
         this.userChanged.emit(this.user);
         this.tokenValidated.emit(true);
       },
