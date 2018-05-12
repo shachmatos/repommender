@@ -3,13 +3,14 @@ import errno
 import time
 from math import floor
 
-from github import Github
-from tqdm import tqdm
+from django.utils import dateparse
+from github import Github, RateLimitExceededException
+from tqdm import tqdm, trange
 from django.core.management import BaseCommand
 
 from offline.settings import GITHUB_CONFIG, BASE_DIR
 import os
-from offline_calculator.models import Topic
+from offline_calculator.models import Topic, Repository
 
 
 def read_scanned_ids(path):
@@ -22,97 +23,162 @@ def read_scanned_ids(path):
     return result
 
 
+def update_topics():
+    g = Github(client_id=GITHUB_CONFIG['client_id'], client_secret=GITHUB_CONFIG['client_secret'])
+
+
 def get_repositories(threshold, do_not_resume=False):
     g = Github(client_id=GITHUB_CONFIG['client_id'], client_secret=GITHUB_CONFIG['client_secret'])
-    topics = Topic.objects.all()
-    repo_ids = set()
-    writer = None
-    topics_writer = None
-    repos_writer = None
+
+    # repo_ids = set()
+    # writer = None
+    # topics_writer = None
+    # repos_writer = None
     storage_path = BASE_DIR + '/storage/'
     scan_file_path = storage_path + 'scan.csv'
     topics_scanned_file = storage_path + 'topics.csv'
     repos_scanned_file = storage_path + 'repos.csv'
     starttime = time.time()
-    resumed = False
+    # resumed = False
     complete = False
     result_name = storage_path + str(floor(starttime)) + '_repositories.csv'
+    last_topic = ''
 
     if os.path.exists(scan_file_path):
         print('Scan already running')
         return
 
-    if os.path.exists(storage_path + 'scan_incomplete.csv'):
+    # if os.path.exists(storage_path + 'scan_incomplete.csv'):
+    if os.path.exists(storage_path + 'incomplete'):
         if do_not_resume:
-            os.remove(storage_path + 'scan_incomplete.csv')
-            repo_file = open(scan_file_path, 'w')
-            topics_file = open(topics_scanned_file, 'w')
-            repo_ids_file = open(repos_scanned_file, 'w')
+            os.remove(storage_path + 'incomplete')
+            # os.remove(storage_path + 'scan_incomplete.csv')
+            # repo_file = open(scan_file_path, 'w')
+            # topics_file = open(topics_scanned_file, 'w')
+            # repo_ids_file = open(repos_scanned_file, 'w')
         else:
-            resumed = True
-            repo_ids = read_scanned_ids(repos_scanned_file)
-            os.rename(storage_path + 'scan_incomplete.csv', scan_file_path)
-            repo_file = open(scan_file_path, 'a')
-            topics_file = open(topics_scanned_file, 'a')
-            repo_ids_file = open(repos_scanned_file, 'a')
+            with open(storage_path + 'incomplete', 'r') as resume:
+                last_topic = resume.read()
+                # print(last_topic)
+                # exit(1)
+            # resumed = True
+            # repo_ids = read_scanned_ids(repos_scanned_file)
+            # os.rename(storage_path + 'scan_incomplete.csv', scan_file_path)
+            # repo_file = open(scan_file_path, 'a')
+            # topics_file = open(topics_scanned_file, 'a')
+            # repo_ids_file = open(repos_scanned_file, 'a')
     else:
-        repo_file = open(scan_file_path, 'w')
-        topics_file = open(topics_scanned_file, 'w')
-        repo_ids_file = open(repos_scanned_file, 'w')
+        pass
+        # repo_file = open(scan_file_path, 'w')
+        # topics_file = open(topics_scanned_file, 'w')
+        # repo_ids_file = open(repos_scanned_file, 'w')
+    # print(1)
+    # exit(1)
+
+    topics = Topic.objects.filter(**{'name__gte': last_topic}).all()
+    search_limit = g.get_rate_limit().search_rate
+
     try:
-        for topic in tqdm(topics, desc='topics'):
+        for topic in tqdm(topics, desc='topics search'):
+            last_topic = topic.name
+            search_limit = g.get_rate_limit().search_rate
+
+            while search_limit.remaining < 1:
+                time.sleep(search_limit.reset.timestamp() - time.time())
+
             repos = g.search_repositories('topic:' + topic.name)
             count = repos.totalCount * threshold
+            top_n = repos[:round(count)]
+            t = trange(round(count))
+            t.set_description("repos")
+            for repo in top_n:
+                limit = g.get_rate_limit().rate.remaining
+                t.set_postfix_str('limit: ' + str(limit))
+                while limit < 10:
+                    print('Wating for rate reset time...')
+                    time.sleep(g.rate_limiting_resettime - time.time() + 10)
+                    limit = g.get_rate_limit().rate.remaining
 
-            top_n = list(repos[:count])
+                repo_obj = Repository.objects.update_or_create(
+                    defaults={
+                        'id': repo.id,
+                        'size': repo.size,
+                        'name': repo.name,
+                        'url': repo.html_url,
+                        'topics': repo.get_topics(),
+                        'languages': repo.get_languages(),
+                        'watchers_count': repo.watchers_count,
+                        'forks_count':repo.forks_count,
+                        'open_issues':repo.open_issues,
+                        'subscribers_count':repo.subscribers_count,
+                        'pushed_at': dateparse.parse_datetime(str(repo.pushed_at)),
+                        'updated_at': dateparse.parse_datetime(str(repo.updated_at))
+                    },
+                    id=repo.id
+                    # size=repo.size,
+                    # name=repo.name,
+                    # url=repo.html_url,
+                    # topics=repo.get_topics(),
+                    # languages=repo.get_languages(),
+                    # watchers_count=repo.watchers_count,
+                    # forks_count=repo.forks_count,
+                    # open_issues=repo.open_issues,
+                    # subscribers_count=repo.subscribers_count,
+                    # pushed_at=dateparse.parse_datetime(str(repo.pushed_at)),
+                    # updated_at=dateparse.parse_datetime(str(repo.updated_at))
+                )
+                t.update()
+                # time.sleep(3)
+                # repo_dict = {
+                #     "id": repo.id,
+                #     "topics": repo.get_topics(),
+                #     "url": repo.html_url,
+                #     "name": repo.name,
+                #     "updated_at": repo.updated_at,
+                #     "pushed_at": repo.pushed_at,
+                #     "size": repo.size,
+                #     "watchers_count": repo.watchers_count,
+                #     "forks_count": repo.forks_count,
+                #     "open_issues": repo.open_issues,
+                #     "subscribers_count": repo.subscribers_count,
+                #     "languages": repo.get_languages()
+                # }
+                # if writer is None:
+                #     fields = list(repo_dict.keys())
+                #     writer = csv.DictWriter(repo_file, fields)
+                #     if not resumed:
+                #         writer.writeheader()
+                #
+                # if repos_writer is None:
+                #     repos_writer = csv.writer(repo_ids_file)
+                #
+                # if topics_writer is None:
+                #     topics_writer = csv.writer(topics_file)
 
-            for repo in tqdm(top_n, desc='repositories'):
-                repo_dict = {
-                    "id": repo.id,
-                    "topics": repo.get_topics(),
-                    "name": repo.name,
-                    "updated_at": repo.updated_at,
-                    "pushed_at": repo.pushed_at,
-                    "size": repo.size,
-                    "watchers_count": repo.watchers_count,
-                    "forks_count": repo.forks_count,
-                    "open_issues": repo.open_issues,
-                    "subscribers_count": repo.subscribers_count,
-                    "languages": repo.get_languages()
-                }
-                if writer is None:
-                    fields = list(repo_dict.keys())
-                    writer = csv.DictWriter(repo_file, fields)
-                    if not resumed:
-                        writer.writeheader()
-
-                if repos_writer is None:
-                    repos_writer = csv.writer(repo_ids_file)
-
-                if topics_writer is None:
-                    topics_writer = csv.writer(topics_file)
-
-                if repo.id not in repo_ids:
-                    writer.writerow(repo_dict)
-                    repo_ids.add(repo.id)
-                    repos_writer.writerow([repo.id])
-                    time.sleep(3)
-            topics_writer.writerow(topic)
+                # if repo.id not in repo_ids:
+                    # writer.writerow(repo_dict)
+                    # repo_ids.add(repo.id)
+                    # repos_writer.writerow([repo.id])
+                    # time.sleep(3)
+            # topics_writer.writerow(topic)
         complete = True
-    except Exception as e:
-        print(e)
     finally:
         endtime = time.time()
         print("Runtime: " + str(endtime - starttime) + 's')
-        repo_file.close()
-        topics_file.close()
-        repo_ids_file.close()
+        # repo_file.close()
+        # topics_file.close()
+        # repo_ids_file.close()
         if complete:
-            os.remove(topics_scanned_file)
-            os.remove(repos_scanned_file)
+            if os.path.exists(storage_path + 'incomplete'):
+                os.remove(storage_path + 'incomplete')
+            # os.remove(topics_scanned_file)
+            # os.remove(repos_scanned_file)
         else:
+            f = open(storage_path + 'incomplete', 'w')
+            f.writelines(last_topic)
+            f.close()
             result_name = storage_path + 'scan_incomplete.csv'
-        os.rename(scan_file_path, result_name)
+        # os.rename(scan_file_path, result_name)
 
 
 class Command(BaseCommand):
@@ -133,7 +199,14 @@ class Command(BaseCommand):
                 raise
         do_not_resume = False
         resume = ''
-        if os.path.exists(BASE_DIR + '/storage/scan_incomplete.csv'):
+        # if os.path.exists(BASE_DIR + '/storage/scan_incomplete.csv'):
+        #     while resume not in ['y', 'Y', 'n', 'N']:
+        #         resume = input('Previous scan detected. Resume? (y/n)')
+        #         if resume == 'y' or resume == 'Y':
+        #             do_not_resume = False
+        #         else:
+        #             do_not_resume = True
+        if os.path.exists(BASE_DIR + '/storage/incomplete'):
             while resume not in ['y', 'Y', 'n', 'N']:
                 resume = input('Previous scan detected. Resume? (y/n)')
                 if resume == 'y' or resume == 'Y':

@@ -9,13 +9,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 
-from offline_calculator.models import Recommendation
+from offline_calculator.models import Recommendation, Repository
 from django.db import connection
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        repositories_df = pd.read_csv("storage/repositories.csv")
+        repos = Repository.objects.all()
+        repositories_df = pd.DataFrame(list(repos.values()))
+
+        # repositories_df = pd.read_csv("storage/repositories.csv")
         repositories_df["topics"] = repositories_df["topics"].apply(ast.literal_eval)
         tf = TfidfVectorizer(
             analyzer='word',
