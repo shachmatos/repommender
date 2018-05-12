@@ -12,9 +12,13 @@
   .channel-content {
     display:flex;
     flex-wrap: nowrap;
-    overflow-x:auto;
+    overflow-x:hidden;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: -ms-autohiding-scrollbar;
+
+    &:hover {
+      overflow-x:auto;
+    }
   }
 
   .repository {
