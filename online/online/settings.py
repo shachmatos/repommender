@@ -137,6 +137,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 GITHUB_CONFIG = {
-    'client_id': '9ab1a214485633eea22a',
-    'client_secret': 'f4890d82d266677c43fbc2dc5aa26de9c2c31f67'
+    'client_id': os.environ.get('GITHUB_CLIENT_ID'),
+    'client_secret': os.environ.get('GITHUB_CLIENT_SECRET')
 }
