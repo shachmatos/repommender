@@ -2,14 +2,11 @@
 <div class="channel" *ngFor="let channel of channels">
   <div class="channel-title">{{channel.title}}</div>
   <div class="channel-content">
-    <div *ngFor="let repository of channel.repositories" class="repository">
-      <div class="repository-body">
-        <h5 class="repository-title">{{repository.name}}</h5>
-        <p class="repository-description">{{repository.desc}}</p>
-      </div>
-      <div class="repository-button">
-        <a href="{{repository.url}}" target="_blank" class="btn btn-dark">Go to repository</a>
-      </div>
-    </div>
+    <a *ngFor="let repository of channel.repositories" href="{{repository.url}}" target="_blank" class="repository" >
+        <div class="repository-body">
+          <h5 class="repository-title">{{repository.name}}</h5>
+          <p class="repository-description">{{repository.desc}}</p>
+        </div>
+    </a>
   </div>
 </div>

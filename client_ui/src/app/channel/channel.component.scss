@@ -37,6 +37,9 @@
     margin: 5px;
     padding: 20px;
     background-color: rgba(200, 200, 200, 0.5);
+    display: block;
+    text-decoration: none;
+    color: black;
 
     // mixins
     @include border-radius(15px);
@@ -49,6 +52,7 @@
       .repository-title {
         padding: 0 5px;
         text-align: center;
+        color: #070b3b;
       }
 
       .repository-description {
