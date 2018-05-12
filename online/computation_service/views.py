@@ -1,3 +1,4 @@
+from django.core import serializers
 from django.http import HttpResponse
 # from github import Github
 # from github.Repository import Repository
@@ -6,7 +7,7 @@ import json
 
 from github import Github
 
-from computation_service.models import Recommendation
+from computation_service.models import Recommendation, Repository
 
 
 def get_channels(user_id: int, access_token: str):
@@ -19,28 +20,29 @@ def get_channels(user_id: int, access_token: str):
     #     print(repo.get_topics())
 
     repo_ids = [
-        277297,
-
+        989886,
+        592533,
+        1561299,
+        1643158,
     ]
 
     channels = []
 
-    for id in repo_ids:
-        source_repo = g.get_repo(id)
-        similar_ids = Recommendation.objects.filter(source=id).all()
-        similar_repos = []
-        for similar_id in similar_ids:
-            repo = g.get_repo(similar_id.target)
-            similar_repos.append({
-                'name': repo.name,
-                'url': repo.html_url,
-                'topics': repo.get_topics()
+    for repo_id in repo_ids:
+        source_repo = Repository.objects.get(id=repo_id)
+        recommended = source_repo.recommended.all()
+        #serializers.serialize('json', source_repo.recommended.all())
+        # similar_repos = []
+        # for similar_id in similar_ids:
+        #     # repo = g.get_repo(similar_id.target)
+        #     repo = similar_id.target;
+        #     similar_repos.append(repo)
+        if recommended.count() > 0:
+            channels.append({
+                'title': 'Because you\'re contributing to ' + source_repo.name,
+                'source': serializers.serialize('json', [source_repo])[1:-1],
+                'repositories': serializers.serialize('json', recommended)
             })
-
-        channels.append({
-            'title': 'Because you\'re contributing to ' + source_repo.name,
-            'repositories': similar_repos
-        })
 
 
     return {

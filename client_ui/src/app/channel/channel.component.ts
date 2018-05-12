@@ -39,12 +39,16 @@ export class ChannelComponent implements OnInit {
 
   private onGetChannels(user: User, data: Object) {
     for (let c of data['channels']) {
+      let repos_raw = JSON.parse(c['repositories']);
+      let source_raw = JSON.parse(c['source']);
       let repos = [];
-      for (let r of c['repositories']) {
-        let repo = new Repository(r['id'], r['name'], r['description'], r['url']);
+      let source = new Repository(source_raw['pk'], source_raw['fields']['name'], 'soon', source_raw['fields']['url'], source_raw['fields']['topics']);
+      for (let r of repos_raw) {
+        let fields = r['fields'];
+        let repo = new Repository(r['pk'], fields['name'], "soon", fields['url'], fields['topics']);
         repos.push(repo);
       }
-      this.channels.push(new Channel(user.id, c['title'], repos));
+      this.channels.push(new Channel(user.id, c['title'], source, repos));
     }
   }
 

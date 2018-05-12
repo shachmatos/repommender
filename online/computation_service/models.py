@@ -1,5 +1,4 @@
 from django.db import models
-from github import Github
 
 
 class Topic(models.Model):
@@ -34,19 +33,18 @@ class Repository(models.Model):
     updated_at = models.DateTimeField()
     pushed_at = models.DateTimeField()
 
+    recommended = models.ManyToManyField('Repository', through='Recommendation', through_fields=('source','target'))
+
 
 class Recommendation(models.Model):
     class Meta:
         db_table = "recommendations"
         unique_together = (('source', 'target'),)
 
-    source = models.IntegerField(db_index=True)
-    target = models.IntegerField(db_index=True)
+    source = models.ForeignKey('Repository', models.CASCADE, 'source', db_index=True)
+    target = models.ForeignKey('Repository', models.CASCADE, 'target', db_index=True)
     score = models.FloatField(max_length=64)
 
-    def get_target_repo(self):
-        g = Github()
-        return g.get_repo(self.target)
 
-    def __str__(self):
-        return str(self.source) + " -> " + str(self.target) + " | Score: " + str(self.score)
+class User(models.Model):
+    id = models.PositiveIntegerField(primary_key=True)
