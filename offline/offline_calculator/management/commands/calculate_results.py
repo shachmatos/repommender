@@ -40,7 +40,7 @@ class Command(BaseCommand):
 
             for source_id in tqdm(results.keys(), "Source"):
                 for target_id in tqdm(results[source_id], "Target"):
-                    r.append(Recommendation(source=source_id, target=target_id[1], score=target_id[0]))
+                    r.append(Recommendation(source_id=int(source_id), target_id=int(target_id[1]), score=target_id[0]))
             cursor = connection.cursor()
             cursor.execute("TRUNCATE TABLE " + Recommendation._meta.db_table)
 

@@ -52,7 +52,7 @@
     .repository-body {
       min-height: 150px;
       max-height: 200px;
-      overflow: auto;
+      overflow: hidden;
       .repository-title {
         padding: 0 5px;
         text-align: center;
@@ -62,6 +62,17 @@
       .repository-description {
         padding: 0 5px;
       }
+
+      .repository-tags {
+        padding: 5px;
+        overflow-y: auto;
+        .repository-tag {
+          display: inline-block;
+          margin: 2px;
+          padding: 5px;
+          background-color: aliceblue;
+        }
+      }
     }
 
     .repository-button {
@@ -70,6 +81,13 @@
       a {
         display: block;
       }
+    }
+
+    .repository-score {
+      position:absolute;
+      right: 5px;
+      bottom: 0;
+      padding: 5px;
     }
   }
 }

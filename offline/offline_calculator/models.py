@@ -34,6 +34,8 @@ class Repository(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     size = models.PositiveIntegerField()
     name = models.CharField(max_length=255)
+    image = models.URLField(null=True)
+    description = models.TextField(null=True)
     url = models.URLField(max_length=255)
     topics = models.TextField()
     languages = models.TextField()
@@ -59,3 +61,9 @@ class Recommendation(models.Model):
 
 class User(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
+    preferred_languages = models.TextField()
+    preferred_topics = models.TextField()
+
+
+class UserRepositories(models.Model):
+    pass

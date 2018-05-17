@@ -39,15 +39,19 @@ export class ChannelComponent implements OnInit {
 
   private onGetChannels(user: User, data: Object) {
     for (let c of data['channels']) {
-      let repos_raw = JSON.parse(c['repositories']);
-      let source_raw = JSON.parse(c['source']);
+      let repos_raw = c['repositories'];
+      let source_raw = c['source'];
       let repos = [];
-      let source = new Repository(source_raw['pk'], source_raw['fields']['name'], 'soon', source_raw['fields']['url'], source_raw['fields']['topics']);
+      let source = new Repository(source_raw['id'], source_raw['name'], source_raw['desc'], source_raw['url'], source_raw['topics']);
+
       for (let r of repos_raw) {
-        let fields = r['fields'];
-        let repo = new Repository(r['pk'], fields['name'], "soon", fields['url'], fields['topics']);
+        // let shared_topics = r['topics'].filter((function(n) { return source.topics.indexOf(n) !== -1 }))
+        // console.log(shared_topics);
+        let topics = r['topics'].sort((a,b) => { return source.topics.indexOf(b) - source.topics.indexOf(a)});
+        let repo = new Repository(r['id'], r['name'], r['desc'], r['url'], topics, r['score']);
         repos.push(repo);
       }
+      repos.sort((a: Repository,b: Repository) => { return b.score - a.score })
       this.channels.push(new Channel(user.id, c['title'], source, repos));
     }
   }

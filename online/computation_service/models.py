@@ -33,7 +33,11 @@ class Repository(models.Model):
     updated_at = models.DateTimeField()
     pushed_at = models.DateTimeField()
 
-    recommended = models.ManyToManyField('Repository', through='Recommendation', through_fields=('source','target'))
+    recommended = models.ManyToManyField(
+        'Repository',
+        through='Recommendation',
+        through_fields=('source','target')
+    )
 
 
 class Recommendation(models.Model):

@@ -9,7 +9,16 @@
         <div class="repository-body">
           <h5 class="repository-title">{{repository.name}}</h5>
           <p class="repository-description">{{repository.desc}}</p>
+          <p>topics</p>
+          <div class="repository-tags">
+            <div class="repository-tag" *ngFor="let topic of repository.topics">
+              {{topic}}
+            </div>
+          </div>
         </div>
+      <div class="repository-score" *ngIf="repository.score != null">
+        {{(repository.getScore())}}%
+      </div>
     </a>
   </div>
 </div>

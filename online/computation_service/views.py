@@ -1,4 +1,7 @@
+import ast
+
 from django.core import serializers
+from django.db.models import QuerySet
 from django.http import HttpResponse
 # from github import Github
 # from github.Repository import Repository
@@ -24,13 +27,22 @@ def get_channels(user_id: int, access_token: str):
         592533,
         1561299,
         1643158,
+        45393000,
+        132267704
     ]
 
     channels = []
 
     for repo_id in repo_ids:
         source_repo = Repository.objects.get(id=repo_id)
-        recommended = source_repo.recommended.all()
+        source_repo_d = source_repo.__dict__
+        source_repo_d.pop('_state')
+        source_repo_d['pushed_at'] = str(source_repo_d['pushed_at'])
+        source_repo_d['updated_at'] = str(source_repo_d['updated_at'])
+        source_repo_d['topics'] = ast.literal_eval(source_repo_d['topics'])
+        recommended = Recommendation.objects.filter(source=source_repo).all().prefetch_related('target')
+
+
         #serializers.serialize('json', source_repo.recommended.all())
         # similar_repos = []
         # for similar_id in similar_ids:
@@ -38,10 +50,20 @@ def get_channels(user_id: int, access_token: str):
         #     repo = similar_id.target;
         #     similar_repos.append(repo)
         if recommended.count() > 0:
+            channel_recs = []
+            for rec in recommended:
+                target = rec.target.__dict__;
+                target.pop('_state')
+                target['pushed_at'] = str(target['pushed_at'])
+                target['updated_at'] = str(target['updated_at'])
+                target['topics'] = ast.literal_eval(target['topics'])
+                target['score'] = rec.score
+                channel_recs.append(target)
+
             channels.append({
                 'title': 'Because you\'re contributing to ' + source_repo.name,
-                'source': serializers.serialize('json', [source_repo])[1:-1],
-                'repositories': serializers.serialize('json', recommended)
+                'source': source_repo_d,
+                'repositories': channel_recs
             })
 
 
