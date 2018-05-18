@@ -61,8 +61,8 @@ class Recommendation(models.Model):
 
 class User(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
-    preferred_languages = models.TextField()
-    preferred_topics = models.TextField()
+    preferred_languages = models.TextField(null=True)
+    preferred_topics = models.TextField(null=True)
 
 
 class UserRepositories(models.Model):

@@ -4,7 +4,8 @@ import time
 from math import floor
 
 from django.utils import dateparse
-from github import Github, RateLimitExceededException
+from github import Github
+from github.Repository import Repository as githubRepository
 from tqdm import tqdm, trange
 from django.core.management import BaseCommand
 
@@ -88,12 +89,12 @@ def get_repositories(threshold, do_not_resume=False):
 
             days_last_updated = datetime.now() - timedelta(days=180)
 
-            repos = g.search_repositories('topic:' + topic.name + "+" + "pushed:>" + days_last_updated.strftime("%Y-%m-%d"))
+            repos = g.search_repositories('topic:' + topic.name + " pushed:>" + days_last_updated.strftime("%Y-%m-%d"))
             count = repos.totalCount * threshold
             top_n = repos[:round(count)]
             t = trange(round(count))
             t.set_description("repos")
-            for repo in top_n:
+            for repo in top_n:  # type: githubRepository
                 limit = g.get_rate_limit().rate.remaining
                 t.set_postfix_str('limit: ' + str(limit))
                 while limit < 10:
@@ -101,7 +102,7 @@ def get_repositories(threshold, do_not_resume=False):
                     time.sleep(g.rate_limiting_resettime - time.time() + 10)
                     limit = g.get_rate_limit().rate.remaining
 
-                repo_obj = Repository.objects.update_or_create(
+                Repository.objects.update_or_create(
                     defaults={
                         'id': repo.id,
                         'size': repo.size,
@@ -114,7 +115,9 @@ def get_repositories(threshold, do_not_resume=False):
                         'open_issues':repo.open_issues,
                         'subscribers_count':repo.subscribers_count,
                         'pushed_at': dateparse.parse_datetime(str(repo.pushed_at)),
-                        'updated_at': dateparse.parse_datetime(str(repo.updated_at))
+                        'updated_at': dateparse.parse_datetime(str(repo.updated_at)),
+                        'image': repo.owner.avatar_url,
+                        "description": repo.description
                     },
                     id=repo.id
                     # size=repo.size,
