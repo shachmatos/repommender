@@ -18,7 +18,6 @@ class Command(BaseCommand):
         repos = Repository.objects.all()
         repositories_df = pd.DataFrame(list(repos.values()))
 
-        # repositories_df = pd.read_csv("storage/repositories.csv")
         repositories_df["topics"] = repositories_df["topics"].apply(ast.literal_eval)
         tf = TfidfVectorizer(
             analyzer='word',
