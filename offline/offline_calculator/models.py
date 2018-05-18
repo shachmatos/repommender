@@ -61,6 +61,8 @@ class Recommendation(models.Model):
 
 class User(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
+    login = models.CharField(unique=True, max_length=50)
+    avatar_url = models.URLField()
     preferred_languages = models.TextField(null=True)
     preferred_topics = models.TextField(null=True)
 
