@@ -77,19 +77,18 @@ def get_repositories(threshold, do_not_resume=False):
     # exit(1)
 
     topics = Topic.objects.filter(**{'name__gte': last_topic}).all()
-    search_limit = g.get_rate_limit().search_rate
 
     try:
         for topic in tqdm(topics, desc='topics search'):
             last_topic = topic.name
             search_limit = g.get_rate_limit().search_rate
 
-            while search_limit.remaining < 1:
-                time.sleep(search_limit.reset.timestamp() - time.time())
+            if search_limit.remaining < 1:
+                time.sleep(60)
 
             days_last_updated = datetime.now() - timedelta(days=180)
 
-            repos = g.search_repositories('topic:' + topic.name + "pushed:>" + days_last_updated.strftime("%Y-%M-%D"))
+            repos = g.search_repositories('topic:' + topic.name + "+" + "pushed:>" + days_last_updated.strftime("%Y-%m-%d"))
             count = repos.totalCount * threshold
             top_n = repos[:round(count)]
             t = trange(round(count))
