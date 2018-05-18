@@ -11,6 +11,7 @@ from django.core.management import BaseCommand
 from offline.settings import GITHUB_CONFIG, BASE_DIR
 import os
 from offline_calculator.models import Topic, Repository
+from datetime import datetime, timedelta
 
 
 def read_scanned_ids(path):
@@ -86,7 +87,9 @@ def get_repositories(threshold, do_not_resume=False):
             while search_limit.remaining < 1:
                 time.sleep(search_limit.reset.timestamp() - time.time())
 
-            repos = g.search_repositories('topic:' + topic.name)
+            days_last_updated = datetime.now() - timedelta(days=180)
+
+            repos = g.search_repositories('topic:' + topic.name + "pushed:>" + days_last_updated.strftime("%Y-%M-%D"))
             count = repos.totalCount * threshold
             top_n = repos[:round(count)]
             t = trange(round(count))
