@@ -10,17 +10,10 @@ import json
 
 from github import Github
 
-from computation_service.models import Recommendation, Repository
+from computation_service.models import Recommendation, Repository, Topic
 
 
 def get_channels(user_id: int, access_token: str):
-    g = Github(login_or_token=access_token)
-
-    # repos = g.get_repos()
-    #
-    # page = repos.get_page(0)
-    # for repo in page: # type: Repository
-    #     print(repo.get_topics())
 
     repo_ids = [
         989886,
@@ -42,8 +35,7 @@ def get_channels(user_id: int, access_token: str):
         source_repo_d['topics'] = ast.literal_eval(source_repo_d['topics'])
         recommended = Recommendation.objects.filter(source=source_repo).all().prefetch_related('target')
 
-
-        #serializers.serialize('json', source_repo.recommended.all())
+        # serializers.serialize('json', source_repo.recommended.all())
         # similar_repos = []
         # for similar_id in similar_ids:
         #     # repo = g.get_repo(similar_id.target)
@@ -65,7 +57,6 @@ def get_channels(user_id: int, access_token: str):
                 'source': source_repo_d,
                 'repositories': channel_recs
             })
-
 
     return {
         "user": user_id,

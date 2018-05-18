@@ -17,6 +17,7 @@ import { UserPreferencesComponent } from './user-preferences/user-preferences.co
 import {TagInputModule} from "ngx-chips";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {UserService} from "./user.service";
+import {PrefService} from "./pref.service";
 
 
 const myRoots: Routes = [
@@ -55,6 +56,7 @@ const myRoots: Routes = [
     ChannelService,
     LoginService,
     CookieService,
+    PrefService,
     UserService
   ],
   bootstrap: [AppComponent]

@@ -1,8 +1,16 @@
-<p>
-  <tag-input [ngModel]="[]"
-             [onlyFromAutocomplete]="true" [placeholder]="['+Topic']" [secondaryPlaceholder]="['Add a new topic']">
-    <tag-input-dropdown [showDropdownIfEmpty]="true"
-                        [autocompleteItems]="['iTem1', 'item2', 'item3']">
-    </tag-input-dropdown>
-  </tag-input>
-</p>
+<div class="modal" id="test">
+  asdgassa
+</div>
+
+<div class="preference-group">
+  <h3>Topics</h3>
+  <button type="button" data-toggle="modal" data-target="#test">Open Modal</button>
+  <p>
+    <tag-input [ngModel]="[]"
+               [onlyFromAutocomplete]="true" [placeholder]="['+Topics']" [secondaryPlaceholder]="['Add a new topic']">
+      <tag-input-dropdown [showDropdownIfEmpty]="true"
+                          [autocompleteItems]="topics">
+      </tag-input-dropdown>
+    </tag-input>
+  </p>
+</div>
