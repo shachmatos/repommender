@@ -16,17 +16,6 @@ class Language(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
 
 
-# id,
-# topics,
-# name,
-# updated_at,
-# pushed_at,
-# size,
-# watchers_count,
-# forks_count,
-# open_issues,
-# subscribers_count,
-# languages
 class Repository(models.Model):
     class Meta:
         db_table = "repositories"
@@ -68,4 +57,5 @@ class User(models.Model):
 
 
 class UserRepositories(models.Model):
-    pass
+    user_id = models.ForeignKey('User', models.CASCADE, db_index=True)
+    repo_id = models.ForeignKey('Repository', models.CASCADE, db_index=True)
