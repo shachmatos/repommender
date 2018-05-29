@@ -1,9 +1,9 @@
 import csv
 import errno
 import time
-from math import floor
 
 from django.utils import dateparse
+from django.utils.encoding import smart_bytes
 from github import Github
 from github.Repository import Repository as githubRepository
 from github.NamedUser import NamedUser as githubNamedUser
@@ -12,7 +12,7 @@ from django.core.management import BaseCommand
 
 from offline.settings import GITHUB_CONFIG, BASE_DIR
 import os
-from offline_calculator.models import Topic, Repository, User, UserRepositories
+from offline_calculator.models import Topic, Repository, User, UserRepository
 from datetime import datetime, timedelta
 
 
@@ -90,14 +90,14 @@ def get_repositories(threshold, do_not_resume=False):
                         'pushed_at': dateparse.parse_datetime(str(repo.pushed_at)),
                         'updated_at': dateparse.parse_datetime(str(repo.updated_at)),
                         'image': repo.owner.avatar_url,
-                        "description": repo.description
+                        "description": smart_bytes(repo.description)
                     },
                     id=repo.id
                 )
 
                 for contributor in repo.get_contributors():  # type: githubNamedUser
                     if User.objects.filter(id=contributor.id).exists():
-                        UserRepositories.objects.update_or_create(user_id=contributor.id, repo_id=repo.id)
+                        UserRepository.objects.update_or_create(user_id=contributor.id, repo_id=repo.id)
                 t.update()
 
         complete = True
