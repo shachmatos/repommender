@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ChannelService} from "../channel.service";
-import {LoginService} from "../login.service";
+import {UserService} from "../user.service";
 import {User} from "../user";
 import {Channel} from "./channel";
 import {Repository} from "./repository";
@@ -12,17 +12,17 @@ import {Repository} from "./repository";
 })
 export class ChannelComponent implements OnInit {
   channels : Array<Channel> = [];
-  constructor(private loginService: LoginService, private channelService : ChannelService) {
+  constructor(private userService: UserService, private channelService : ChannelService) {
 
   }
 
   ngOnInit() {
-    this.loginService.userChanged.subscribe(user => {
+    this.userService.userChanged.subscribe(user => {
       this.onUserChanged(user);
     });
 
-    if (this.loginService.getUser() != null) {
-      this.onUserChanged(this.loginService.getUser());
+    if (this.userService.getUser() != null) {
+      this.onUserChanged(this.userService.getUser());
     }
   }
 

@@ -1,0 +1,32 @@
+
+.topic-tag {
+  margin: 5px;
+  display: inline-block;
+}
+
+.preference-group {
+  height: 550px;
+  .topics {
+    height: 80%;
+    position: relative;
+    .selected-topics {
+      overflow-y: scroll;
+      height: 50%;
+      tag-input {
+        height: 100%;
+      }
+    }
+    .available-topics {
+      overflow-y: scroll;
+      height: 50%;
+    }
+  }
+  .preferences-button-group {
+    height: 15%;
+    margin: 5px;
+    padding: 5px;
+    text-align: center;
+  }
+}
+
+

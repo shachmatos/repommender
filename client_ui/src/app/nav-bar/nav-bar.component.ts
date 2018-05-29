@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {LoginService} from "../login.service";
+import {UserService} from "../user.service";
 import {Config} from "../config";
 import {User} from "../user";
+import {NgxSmartModalService} from "ngx-smart-modal";
 
 @Component({
   selector: 'app-nav-bar',
@@ -47,17 +48,17 @@ export class NavBarComponent implements OnInit {
   username: string = "unknown";
   user: User = null;
 
-  constructor(private loginService: LoginService) { }
+  constructor(private userService: UserService, public modalService: NgxSmartModalService) { }
 
   ngOnInit() {
-    this.loginService.userChanged.subscribe(user => {
+    this.userService.userChanged.subscribe(user => {
       this.onUserChange(user);
     });
   }
 
   logout(e: Event): void {
     e.preventDefault();
-    this.loginService.logout();
+    this.userService.logout();
   }
 
   private onUserChange(user: User) {

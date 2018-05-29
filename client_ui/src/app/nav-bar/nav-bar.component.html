@@ -17,7 +17,7 @@
           {{user.name}}
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" routerLink="preferences">Preferences</a>
+          <a class="dropdown-item" routerLink="" (click)="modalService.getModal('prefModal').open()">Preferences</a>
           <a class="dropdown-item" routerLink="" (click)="logout($event)">Logout</a>
           <!--<div class="dropdown-divider"></div>-->
           <!--<a class="dropdown-item" href="#">Something else here</a>-->

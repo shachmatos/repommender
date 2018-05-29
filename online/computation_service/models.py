@@ -51,4 +51,18 @@ class Recommendation(models.Model):
 
 
 class User(models.Model):
+    class Meta:
+        db_table = "users"
     id = models.PositiveIntegerField(primary_key=True)
+    login = models.CharField(unique=True, max_length=50)
+    avatar_url = models.URLField()
+    preferred_languages = models.TextField(null=True)
+    preferred_topics = models.TextField(null=True)
+
+
+class UserRepositories(models.Model):
+    class Meta:
+        db_table = "user_repositories"
+    user_id = models.ForeignKey('User', models.CASCADE, db_index=True)
+    repo_id = models.ForeignKey('Repository', models.CASCADE, db_index=True)
+    contributions = models.PositiveIntegerField(default=0)

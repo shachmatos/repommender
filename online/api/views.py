@@ -1,12 +1,14 @@
+import ast
+
 import requests, json
 from django.core import serializers
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, QueryDict
 from django.views.decorators.csrf import csrf_exempt
 from github import Github
 
-from computation_service.models import Topic, Language
+from computation_service.models import Topic, Language, User
 from online.settings import GITHUB_CONFIG
+
 
 @csrf_exempt
 def get_access_token(request, code):
@@ -29,7 +31,12 @@ def get_access_token(request, code):
 
     if res.status_code == 200 and 'access_token' in token.keys():
         g = Github(token['access_token'])
-        # TODO save user if needed
+        github_user = g.get_user()
+        user = User.objects.update_or_create(defaults={
+            'id': github_user.id,
+            'login': github_user.login,
+            'avatar_url': github_user.avatar_url
+        }, id=github_user.id)
 
     return HttpResponse(res)
 
@@ -42,3 +49,27 @@ def get_topics(request):
 def get_languages(request):
     langs = Language.objects.all()
     return HttpResponse(str(serializers.serialize('json', langs)))
+
+
+def get_user_preferences(request, user_id):
+    user = User.objects.get(id=user_id)
+    user_topics = ast.literal_eval(user.preferred_topics)
+    user_languages = ast.literal_eval(user.preferred_languages)
+    result = {
+        'topics': user_topics,
+        'languages': user_languages
+    }
+    return HttpResponse(str(json.dumps(result)))
+
+@csrf_exempt
+def save_user_preferences(request, user_id):
+    data = json.loads(request.body)
+    user = User.objects.get(id=user_id)
+    user.preferred_topics = data['topics']
+    user.preferred_languages = data['languages']
+    print(user.preferred_topics)
+    print(user.preferred_languages)
+    user.save()
+
+    return HttpResponse()
+

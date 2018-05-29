@@ -9,7 +9,7 @@ export class ChannelService {
   constructor(private http : HttpClient) { }
 
   public getChannels(user: User) {
-    const url = 'http://' + Config.repommender_config.server_url + ':' + Config.repommender_config.server_port + '/service/fetch_channels';
+    const url = 'http://' + Config.repommender_config.server_url + ':' + Config.repommender_config.server_port + '/service/fetch_channels/';
 
     let headers = new HttpHeaders()
       .append("Accept", "application/json");

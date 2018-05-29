@@ -1,16 +1,50 @@
-<div class="modal" id="test">
-  asdgassa
-</div>
+<!--<div class="modal" id="test" role="dialog">-->
+  <!--<div class="modal-dialog" role="document">-->
+    <!--<div class="modal-content">-->
+      <!--<div class="modal-header">-->
+        <!--<h5 class="modal-title">Add / Remove Topics</h5>-->
+        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+          <!--<span aria-hidden="true">&times;</span>-->
+        <!--</button>-->
+      <!--</div>-->
+      <!--<div class="modal-body">-->
+        <!--<tag-input [ngModel]="test_disp" #topics_input-->
+                   <!--[onlyFromAutocomplete]="true" [placeholder]="['+Topics']" [secondaryPlaceholder]="['+Topic']">-->
+          <!--<tag-input-dropdown [showDropdownIfEmpty]="true"-->
+                              <!--[autocompleteItems]="topics">-->
+          <!--</tag-input-dropdown>-->
+        <!--</tag-input>-->
+      <!--</div>-->
+      <!--<div class="modal-footer">-->
+        <!--<button type="button" class="btn btn-dark">Save</button>-->
+        <!--<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</div>-->
 
-<div class="preference-group">
-  <h3>Topics</h3>
-  <button type="button" data-toggle="modal" data-target="#test">Open Modal</button>
-  <p>
-    <tag-input [ngModel]="[]"
-               [onlyFromAutocomplete]="true" [placeholder]="['+Topics']" [secondaryPlaceholder]="['Add a new topic']">
-      <tag-input-dropdown [showDropdownIfEmpty]="true"
-                          [autocompleteItems]="topics">
-      </tag-input-dropdown>
-    </tag-input>
-  </p>
-</div>
+
+<ngx-smart-modal identifier="prefModal" #prefModal [closable]="false" [escapable]="false" [dismissable]="false">
+  <div class="preference-group">
+    <h3>Preferences</h3>
+    <div class="topics">
+      <div class="selected-topics">
+        <tag-input [ngModel]="[]" #topics_input (onAdd)="onAddTopic($event)" (onRemove)="onRemoveTopic($event)"
+                   [onlyFromAutocomplete]="true" [placeholder]="[placeholder]" [secondaryPlaceholder]="[placeholder]">
+          <tag-input-dropdown [showDropdownIfEmpty]="true"
+                              [autocompleteItems]="topics" [zIndex]="999999">
+          </tag-input-dropdown>
+        </tag-input>
+      </div>
+      <div class="available-topics">
+        <div class="topic-tag" *ngFor="let topic of topics">
+          <button class="btn btn-info" id="{{topic.value}}" (click)="onTopicClick($event)" #tagbtn>{{topic.display}}</button>
+        </div>
+      </div>
+    </div>
+    <div class="preferences-button-group">
+      <button class="btn btn-dark" (click)="saveUserPreferences()">Save</button>
+      <button class="btn btn-light" (click)="prefModal.close()">Cancel</button>
+    </div>
+  </div>
+</ngx-smart-modal>

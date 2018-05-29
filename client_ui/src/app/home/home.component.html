@@ -1,42 +1,13 @@
-<div *ngIf="!authenticated">
-  <app-jumbotron title="Repommender" subTitle="A Recommendation System for Developers" actionUrl="{{actionUrl}}" actionText="{{actionText}}" (onLogin)="setAuthenticated(true)"></app-jumbotron>
+<ng4-loading-spinner > </ng4-loading-spinner>
+<ngx-smart-modal #popuptwo [identifier]="'popuptwo'">
+  <h1>Title 2</h1>
+  <p>Hello</p>
+  <button (click)="popuptwo.close()">Close</button>
+</ngx-smart-modal>
+<div *ngIf="!authenticated && !loading">
+  <app-jumbotron title="Repommender" subTitle="A Recommendation System for Developers" actionUrl="{{actionUrl}}" actionText="{{actionText}}"></app-jumbotron>
   <app-home-info></app-home-info>
-  <div>
-    <form #form="ngForm">
-      <input id="name" name="name" required ngModel class="form-control" [appForbiddenName]="" minlength="4" [(ngModel)]="testName" #name="ngModel" >
-
-      <div *ngIf="name.invalid && (name.dirty || name.touched)"
-           class="alert alert-danger">
-
-        <div *ngIf="name.errors.required">
-          Name is required.
-        </div>
-        <div *ngIf="name.errors.minlength">
-          Name must be at least 4 characters long.
-        </div>
-        <div *ngIf="name.errors.forbiddenName">
-          Name cannot be Bob.
-        </div>
-      </div>
-    </form>
-    <!--<input type="number" [(ngModel)]="name" id="name" name="name">-->
-    <!--<p>{{name}}</p>-->
-    <!--<div *ngIf="name.invalid && (name.dirty || name.touched)"-->
-         <!--class="alert alert-danger">-->
-
-      <!--<div *ngIf="name.errors.required">-->
-        <!--Name is required.-->
-      <!--</div>-->
-      <!--<div *ngIf="name.errors.minlength">-->
-        <!--Name must be at least 4 characters long.-->
-      <!--</div>-->
-      <!--<div *ngIf="name.errors.forbiddenName">-->
-        <!--Name cannot be Bob.-->
-      <!--</div>-->
-
-    <!--</div>-->
-  </div>
 </div>
-<div *ngIf="authenticated">
+<div *ngIf="authenticated && !loading">
   <app-channel></app-channel>
 </div>

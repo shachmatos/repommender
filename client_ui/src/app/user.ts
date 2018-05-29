@@ -4,7 +4,9 @@ export class User {
               public login: string,
               public name: string,
               public avatar: string = "",
-              public gravatar_id: string = "") {}
+              public gravatar_id: string = "",
+              public preferred_topics: Array<string> = []) {}
+
 }
 
 

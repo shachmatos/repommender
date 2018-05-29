@@ -9,15 +9,16 @@ import { HomeInfoComponent } from './home-info/home-info.component';
 import { ChannelComponent } from './channel/channel.component';
 import { ChannelService } from "./channel.service";
 import { HttpClientModule } from "@angular/common/http";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormsModule} from "@angular/forms";
 import {ForbiddenValidatorDirective} from "./shared/forbidden-name.directive";
-import {LoginService} from "./login.service";
 import {CookieService} from "ngx-cookie-service";
 import { UserPreferencesComponent } from './user-preferences/user-preferences.component';
 import {TagInputModule} from "ngx-chips";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {UserService} from "./user.service";
 import {PrefService} from "./pref.service";
+import {Ng4LoadingSpinnerModule, Ng4LoadingSpinnerService} from "ng4-loading-spinner";
+import {NgxSmartModalModule, NgxSmartModalService} from "ngx-smart-modal";
 
 
 const myRoots: Routes = [
@@ -25,10 +26,10 @@ const myRoots: Routes = [
     path: '',
     component: HomeComponent
   },
-  {
-    path: 'preferences',
-    component: UserPreferencesComponent
-  }
+  // {
+  //   path: 'preferences',
+  //   component: UserPreferencesComponent
+  // }
 ];
 
 @NgModule({
@@ -40,31 +41,30 @@ const myRoots: Routes = [
     HomeInfoComponent,
     ChannelComponent,
     ForbiddenValidatorDirective,
-    UserPreferencesComponent
+    UserPreferencesComponent,
   ],
   imports: [
     BrowserModule,
+    NgxSmartModalModule.forRoot(),
     BrowserAnimationsModule,
     RouterModule.forRoot(myRoots),
     HttpClientModule,
     FormsModule,
+    Ng4LoadingSpinnerModule.forRoot(),
     TagInputModule
   ],
   exports: [
   ],
   providers: [
     ChannelService,
-    LoginService,
     CookieService,
+    NgxSmartModalService,
     PrefService,
+    Ng4LoadingSpinnerService,
     UserService
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  // static loginService: LoginService;
-  //
-  // static getLoginService() {
-  //   return this.loginService;
-  // }
+
 }
