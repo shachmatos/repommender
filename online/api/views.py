@@ -32,7 +32,7 @@ def get_access_token(request, code):
     if res.status_code == 200 and 'access_token' in token.keys():
         g = Github(token['access_token'])
         github_user = g.get_user()
-        user = User.objects.update_or_create(defaults={
+        User.objects.update_or_create(defaults={
             'id': github_user.id,
             'login': github_user.login,
             'avatar_url': github_user.avatar_url
@@ -54,21 +54,18 @@ def get_languages(request):
 def get_user_preferences(request, user_id):
     user = User.objects.get(id=user_id)
     user_topics = ast.literal_eval(user.preferred_topics)
-    user_languages = ast.literal_eval(user.preferred_languages)
     result = {
         'topics': user_topics,
-        'languages': user_languages
     }
     return HttpResponse(str(json.dumps(result)))
+
 
 @csrf_exempt
 def save_user_preferences(request, user_id):
     data = json.loads(request.body)
     user = User.objects.get(id=user_id)
     user.preferred_topics = data['topics']
-    user.preferred_languages = data['languages']
     print(user.preferred_topics)
-    print(user.preferred_languages)
     user.save()
 
     return HttpResponse()
