@@ -5,7 +5,7 @@
     <h4>Because you're contributing to <a href="{{channel.source.url}}" target="_blank">{{channel.source.name}}</a></h4>
   </div>
   <div class="channel-content">
-    <a *ngFor="let repository of channel.repositories" href="{{repository.url}}" target="_blank" class="repository" >
+    <a *ngFor="let repository of channel.repositories" href="{{repository.url}}" target="_blank" class="repository" [style.background-image]="'url('+repository.img+')'">
         <div class="repository-body">
           <h5 class="repository-title">{{repository.name}}</h5>
           <p class="repository-description">{{repository.desc}}</p>

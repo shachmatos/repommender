@@ -48,7 +48,7 @@ export class ChannelComponent implements OnInit {
         // let shared_topics = r['topics'].filter((function(n) { return source.topics.indexOf(n) !== -1 }))
         // console.log(r);
         let topics = r['topics']; //.sort((a,b) => { return source.topics.indexOf(b) - source.topics.indexOf(a)});
-        let repo = new Repository(r['id'], r['name'], r['desc'], r['url'], topics, r['score']);
+        let repo = new Repository(r['id'], r['name'], r['desc'], r['url'], r['image'], topics, r['score']);
         repos.push(repo);
       }
       repos.sort((a: Repository,b: Repository) => { return b.score - a.score })
