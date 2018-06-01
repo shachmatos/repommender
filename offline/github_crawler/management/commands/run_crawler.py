@@ -39,6 +39,8 @@ def get_repositories(threshold, do_not_resume=False):
     complete = False
     last_topic = ''
 
+    user_count_sample = 400
+
     if os.path.exists(scan_file_path):
         print('Scan already running')
         return
@@ -96,6 +98,9 @@ def get_repositories(threshold, do_not_resume=False):
                 )
 
                 for contributor in repo.get_contributors():  # type: githubNamedUser
+                    if user_count_sample > 0:
+                        User.objects.update_or_create(id=contributor.id, login=contributor.login, avatar_url=contributor.avatar_url)
+                        user_count_sample -= 1
                     if User.objects.filter(id=contributor.id).exists():
                         UserRepository.objects.update_or_create(user_id=contributor.id, repo_id=repo.id)
                 t.update()

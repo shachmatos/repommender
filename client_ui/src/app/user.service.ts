@@ -86,7 +86,7 @@ export class UserService {
     let result = this.http.get(url);
     result.subscribe(
       data => {
-        this.user = new User(data['id'], token, data['login'], data['name']);
+        this.user = new User(data['id'], token, data['login'], data['name'], data['avatar_url']);
         this.userChanged.emit(this.user);
         this.getUserPreferences();
         this.tokenValidated.emit(true);
