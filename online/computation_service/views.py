@@ -4,42 +4,47 @@ import ast
 from django.http import HttpResponse
 import json
 
+from django.utils.encoding import smart_text
+
 from computation_service.models import *
 
 
 def get_channels(user_id: int):
-    repo_ids = [1]
+    channel_picks_for_you = []
 
-    # for recommendation in Recommendation.objects.filter(user_id=0):
-    #     repo_ids.append(recommendation.target.id)
+    for recommendation in Recommendation.objects.filter(user_id=user_id, channel_type='u'):
+        channel_picks_for_you.append(format_repo_to_json(recommendation.target.__dict__, recommendation.score))
 
-    channels = []
+    channels = [{
+        'title': 'Top Picks for you',
+        'source': user_id,
+        'channel_type': 'u',
+        'repositories': channel_picks_for_you
+    }]
 
-    for repo_id in repo_ids:
-        # source_repo = Repository.objects.get(id=repo_id)
-        # source_repo_d = source_repo.__dict__
-        # source_repo_d.pop('_state')
-        # source_repo_d['pushed_at'] = str(source_repo_d['pushed_at'])
-        # source_repo_d['updated_at'] = str(source_repo_d['updated_at'])
-        # source_repo_d['topics'] = ast.literal_eval(source_repo_d['topics'])
-        recommended = Recommendation.objects.filter(user_id=0).all().prefetch_related('target')
+    repo_seed_ids = set()
+
+    for recommendation in Recommendation.objects.filter(user_id=user_id, channel_type='r'):
+        repo_seed_ids.add(recommendation.source)
+
+    for repo_id in repo_seed_ids:
+        source_repo = Repository.objects.get(id=repo_id)
+        source_repo_d = source_repo.__dict__
+        source_repo_d.pop('_state')
+        source_repo_d['pushed_at'] = str(source_repo_d['pushed_at'])
+        source_repo_d['updated_at'] = str(source_repo_d['updated_at'])
+        source_repo_d['topics'] = ast.literal_eval(source_repo_d['topics'])
+        recommended = Recommendation.objects.filter(user_id=user_id, source=repo_id).all().prefetch_related('target')
 
         if recommended.count() > 0:
             channel_recs = []
-            for rec in recommended:
-                target = rec.target.__dict__
-                # if target["id"] == 43278409:
-                #     pass
-                target.pop('_state')
-                target['pushed_at'] = str(target['pushed_at'])
-                target['updated_at'] = str(target['updated_at'])
-                target['topics'] = ast.literal_eval(target['topics'])
-                target['score'] = rec.score
-                channel_recs.append(target)
+            for recommendation in recommended:
+                channel_recs.append(format_repo_to_json(recommendation.target.__dict__, recommendation.score))
 
             channels.append({
-                'title': "Top picks for you",
-                'source': "Top picks for you",
+                'title': 'Because you\'re contributing to ' + source_repo.name,
+                'source': source_repo_d,
+                'channel_type': 'r',
                 'repositories': channel_recs
             })
 
@@ -47,6 +52,16 @@ def get_channels(user_id: int):
         "user": user_id,
         "channels": channels
     }
+
+
+def format_repo_to_json(repo, score):
+    repo.pop('_state')
+    repo['pushed_at'] = str(repo['pushed_at'])
+    repo['updated_at'] = str(repo['updated_at'])
+    repo['topics'] = ast.literal_eval(repo['topics'])
+    repo['score'] = score
+    repo['description'] = smart_text(repo['description'])
+    return repo
 
 
 def fetch_recommendation_channels(request):
