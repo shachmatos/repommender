@@ -8,6 +8,6 @@
   <app-jumbotron title="Repommender" subTitle="A Recommendation System for Developers" actionUrl="{{actionUrl}}" actionText="{{actionText}}"></app-jumbotron>
   <app-home-info></app-home-info>
 </div>
-<div *ngIf="authenticated && !loading">
+<div *ngIf="authenticated && !loading" class="repommender-channels">
   <app-channel></app-channel>
 </div>

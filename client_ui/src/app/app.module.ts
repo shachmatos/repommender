@@ -19,6 +19,7 @@ import {UserService} from "./user.service";
 import {PrefService} from "./pref.service";
 import {Ng4LoadingSpinnerModule, Ng4LoadingSpinnerService} from "ng4-loading-spinner";
 import {NgxSmartModalModule, NgxSmartModalService} from "ngx-smart-modal";
+import {ToastModule, ToastOptions, ToastsManager} from "ng2-toastr";
 
 
 const myRoots: Routes = [
@@ -51,7 +52,8 @@ const myRoots: Routes = [
     HttpClientModule,
     FormsModule,
     Ng4LoadingSpinnerModule.forRoot(),
-    TagInputModule
+    TagInputModule,
+    ToastModule.forRoot()
   ],
   exports: [
   ],
@@ -61,7 +63,9 @@ const myRoots: Routes = [
     NgxSmartModalService,
     PrefService,
     Ng4LoadingSpinnerService,
-    UserService
+    UserService,
+    ToastsManager,
+    ToastOptions
   ],
   bootstrap: [AppComponent]
 })

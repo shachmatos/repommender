@@ -24,7 +24,7 @@ export class UserService {
   @Output() loginExpired: EventEmitter<any> = new EventEmitter<any>();
   @Output() tokenValidated: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() userChanged: EventEmitter<User> = new EventEmitter<User>();
-  @Output() topicsSaved: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() preferencesSaved: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() userPreferencesFetched: EventEmitter<any> = new EventEmitter<any>();
 
 
@@ -126,10 +126,10 @@ export class UserService {
       {headers: headers})
       .subscribe(
         result => {
-          this.topicsSaved.emit(true);
+          this.preferencesSaved.emit(true);
         },
         err => {
-          this.topicsSaved.emit(false);
+          this.preferencesSaved.emit(false);
         }
     );
   }

@@ -1,10 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewContainerRef} from '@angular/core';
 import {Config} from "../config";
 import {FormsModule, FormControl, FormGroup, FormBuilder} from "@angular/forms";
 import {UserService} from "../user.service";
 import {ActivatedRoute} from "@angular/router";
 import {Ng4LoadingSpinnerService} from "ng4-loading-spinner";
 import {CookieService} from "ngx-cookie-service";
+import {ToastsManager} from "ng2-toastr";
 
 @Component({
   selector: 'app-home',
@@ -21,8 +22,15 @@ export class HomeComponent implements OnInit {
 
   @Output() onAuthentication : EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private userService : UserService, private route: ActivatedRoute, private spinner: Ng4LoadingSpinnerService, private cookies: CookieService) {
-
+  constructor(
+    private userService : UserService,
+    private route: ActivatedRoute,
+    private spinner: Ng4LoadingSpinnerService,
+    private cookies: CookieService,
+    private toastr: ToastsManager,
+    private vcr: ViewContainerRef
+  ) {
+    this.toastr.setRootViewContainerRef(vcr);
   }
 
   ngOnInit() {
@@ -39,21 +47,26 @@ export class HomeComponent implements OnInit {
     }
 
     // this.loginService.checkLogin();
-    this.userService.tokenValidated.subscribe(status => {this.onLoginStatusChange(status);});
-    this.userService.loginStatusChange.subscribe(status => {this.onLoginStatusChange(status);});
-  }
-
-  private onLoginSuccess() {
-    this.authenticated = true;
-  }
-
-  private onLogout() {
-    this.authenticated = false;
+    this.userService.tokenValidated.subscribe(
+      status => {this.onLoginStatusChange(status);},
+      err => {this.onLoginError(); }
+      );
+    this.userService.loginStatusChange.subscribe(
+      status => {this.onLoginStatusChange(status);},
+      err => {this.onLoginError(); }
+      );
   }
 
   private onLoginStatusChange(status: boolean) {
     this.authenticated = status;
     this.loading = false;
     this.spinner.hide();
+  }
+
+  private onLoginError() {
+    this.authenticated = false;
+    this.loading = false;
+    this.spinner.hide();
+    this.toastr.error("Connection to server failed, Try again later.");
   }
 }

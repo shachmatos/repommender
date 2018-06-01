@@ -1,18 +1,19 @@
 @import '../../sass/_mixins.scss';
+@import '../../sass/_variables.scss';
 
 .channel {
   margin: 5px auto;
 
   .channel-title {
     font-size: 24px;
-    margin: 5px;
+    margin: 0 5px;
     padding: 5px;
   }
 
   .channel-content {
     display:flex;
     flex-wrap: nowrap;
-    overflow-x:hidden;
+    overflow:hidden;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: -ms-autohiding-scrollbar;
 
@@ -25,7 +26,8 @@
     // Modifiers
     &:hover {
       background-color: #97bcff;
-      transition: background-color 200ms ease-in-out;
+      transform: scale(1.1);
+      transition: all 200ms ease-in-out;
 
       .repository-button a {
         //color: #000000;
@@ -35,14 +37,17 @@
     }
 
     // Basic
-    box-sizing: border-box;
+    //box-sizing: border-box;
+    box-sizing: content-box;
+    //padding-bottom: 17px;
     position: relative;
-    width: 230px;
+    width: 220px;
     margin: 5px;
     padding: 20px;
-    background-color: rgba(200, 200, 200, 0.5);
+    background-color: rgba(200, 200, 200, 0.8);
     display: block;
     text-decoration: none;
+    overflow: hidden;
     color: black;
 
     // mixins
@@ -50,8 +55,8 @@
     @include flex-item(250px, 0, 0);
 
     .repository-body {
-      min-height: 150px;
-      max-height: 200px;
+      min-height: 120px;
+      max-height: 120px;
       overflow: hidden;
       .repository-title {
         padding: 0 5px;
@@ -89,6 +94,15 @@
       bottom: 0;
       padding: 5px;
     }
+  }
+
+  .channel-info {
+    //display: none;
+    width: 100vw;
+    height: 360px;
+    background: red;
+    padding: 5px;
+    margin: 0 5px;
   }
 }
 
