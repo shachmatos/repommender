@@ -5,6 +5,7 @@ export class Repository {
     public name: string,
     public description: string,
     public url: string,
+    public img: string,
     public topics: Array<string> = null,
     public score: number = null
   ) {}

@@ -1,6 +1,7 @@
 // Client Color Variables
 
 $base-color: #343a3f;
+$dark-color: darken($base-color, 15%);
 $light-color: lighten($base-color, 10%);
 $text-light: #ffffff;
 
