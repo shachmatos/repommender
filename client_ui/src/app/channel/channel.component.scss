@@ -103,6 +103,22 @@
     background: red;
     padding: 5px;
     margin: 0 5px;
+
+    .tags {
+      padding: 5px;
+      overflow-y: auto;
+      .tag {
+        display: inline-block;
+        margin: 2px;
+        padding: 5px;
+        background-color: aliceblue;
+      }
+    }
+
+    .desc {
+
+    }
+
   }
 }
 
