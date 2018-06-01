@@ -23,6 +23,10 @@ class Command(BaseCommand):
         user_df = pd.DataFrame(list(User.objects.all().values()))
         user_repo_df = pd.DataFrame(list(UserRepository.objects.all().values()))
 
+        # if either of the data frames is empty stop the scripe.
+        if user_repo_df.size == 0 or repositories_df.size == 0:
+            return
+
         # merging with repo_db to get all topics for each user-repo relation
         intermediate_user_join = pd.merge(user_repo_df, repositories_df[["id", "topics"]], left_on="repo_id", right_on="id")
         user_vector_df = pd.DataFrame()
