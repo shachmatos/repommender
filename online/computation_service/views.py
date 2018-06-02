@@ -10,7 +10,7 @@ from computation_service.models import *
 def get_channels(user_id: int):
     channel_picks_for_you = []
     channels = []
-
+    # user_id = 681420
     repo_seed_ids = set()
 
     for recommendation in Recommendation.objects.filter(user_id=user_id, channel_type='r'):
@@ -35,9 +35,13 @@ def get_channels(user_id: int):
                 'source': source_repo_d,
                 'repositories': channel_recs
             })
-
+    picks_for_you = []
     for recommendation in Recommendation.objects.filter(user_id=user_id, channel_type='u'):
-        channel_picks_for_you.append(format_repo_to_json(recommendation.target.__dict__, recommendation.score))
+        picks_for_you.append(format_repo_to_json(recommendation.target.__dict__, recommendation.score))
+
+    channel_picks_for_you.append({
+        'repositories': picks_for_you
+    })
 
     return {
         "user": user_id,
@@ -51,6 +55,7 @@ def format_repo_to_json(repo, score):
     repo['pushed_at'] = str(repo['pushed_at'])
     repo['updated_at'] = str(repo['updated_at'])
     repo['topics'] = ast.literal_eval(repo['topics'])
+    repo['languages'] = ast.literal_eval(repo['languages'])
     repo['score'] = score
     repo['description'] = smart_text(repo['description'])
     return repo

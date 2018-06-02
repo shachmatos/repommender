@@ -1,27 +1,57 @@
 
 <div class="channel" *ngFor="let channel of channels">
-  <!--<div class="channel-title">{{channel.title}}</div>-->
   <div class="channel-title">
-    <h4>Because you're contributing to <a href="{{channel.source.url}}" target="_blank">{{channel.source.name}}</a></h4>
+    <h4 *ngIf="channel.source.url == null">{{channel.title}}</h4>
+    <h4 *ngIf="channel.source.url != null">Because you're contributing to <a href="{{channel.source.url}}" target="_blank">{{channel.source.name}}</a></h4>
   </div>
   <div class="channel-content">
-    <a *ngFor="let repository of channel.repositories" href="{{repository.url}}" target="_blank" class="repository" [style.background-image]="'url('+repository.img+')'">
-        <div class="repository-body">
+    <!--<a *ngFor="let repository of channel.repositories" href="{{repository.url}}" target="_blank" class="repository" [style.background-image]="'url('+repository.img+')'">-->
+    <div *ngFor="let repository of channel.repositories" class="repository" [style.background-image]="'url('+repository.img+')'">
+        <div class="repository-body" (click)="repository.selected.emit(repository)">
           <h5 class="repository-title">{{repository.name}}</h5>
           <p class="repository-description">{{repository.desc}}</p>
-          <p>topics</p>
-          <div class="repository-tags">
-            <div class="repository-tag" *ngFor="let topic of repository.topics">
-              {{topic}}
-            </div>
-          </div>
         </div>
       <div class="repository-score" *ngIf="repository.score != null">
         {{(repository.getScore())}}%
       </div>
-    </a>
+    </div>
   </div>
-  <div class="channel-info">
-    adsgas
+  <div class="channel-info container container-fluid" [@infoPanelOpen]="open_info_channel == channel && channel.info_open && channel.selected_repo" *ngIf="open_info_channel == channel && channel.info_open && channel.selected_repo != null">
+    <div class="row">
+      <div class="col-4 left-panel">
+        <h3>Quick Facts:</h3>
+        <ul class="quick-facts">
+          <!--<li><span class="key">Owner</span>: {{channel.selected_repo.owner}}</li>-->
+          <!--<li><span class="key">Contributors</span>: {{channel.selected_repo.contribut}}</li>-->
+          <li><span class="key">Forks</span>: {{channel.selected_repo.forks_count}}</li>
+          <li><span class="key">Issues</span>: {{channel.selected_repo.open_issues}}</li>
+          <li><span class="key">Subscribers</span>: {{channel.selected_repo.subscribers_count}}</li>
+          <li><span class="key">Watchers</span>: {{channel.selected_repo.watchers_count}}</li>
+          <li><span class="key">Last Update</span>: {{channel.selected_repo.getDate()}}</li>
+        </ul>
+        <a  [href]="channel.selected_repo.url" target="_blank" class="btn btn-lg btn-success">Go to repo</a>
+      </div>
+      <div class="col-8 right-panel">
+        <button class="close-btn" (click)="channel.info_open = false">&#10006;</button>
+        <div class="desc">
+          <h3>{{channel.selected_repo.name}}</h3>
+          <div class="desc-text">
+            {{channel.selected_repo.description}}
+          </div>
+        </div>
+        <div class="tags">
+          <h3>Topics:</h3>
+          <div class="tag" *ngFor="let topic of channel.selected_repo.topics">
+            {{topic}}
+          </div>
+        </div>
+        <div class="tags">
+          <h3>Languages:</h3>
+          <div class="tag" *ngFor="let lang of channel.selected_repo.getLanguageList()">
+            {{lang}}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

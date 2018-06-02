@@ -7,5 +7,24 @@
 body {
   //padding-top: 3.5rem;
   padding-top: 53px;
+  background-color: $dark-color;
 }
 
+.close-btn {
+  position: absolute;
+  background-color: transparent;
+  color: $text-light;
+  border: 0;
+  right: 0;
+  top: 0;
+  margin: 5px;
+
+  &:hover {
+    cursor:pointer;
+  }
+
+  &:focus {
+    border: 0;
+    outline: 0;
+  }
+}

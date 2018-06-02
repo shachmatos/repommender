@@ -3,5 +3,8 @@
 $base-color: #343a3f;
 $dark-color: darken($base-color, 15%);
 $light-color: lighten($base-color, 10%);
-$text-light: #ffffff;
+$text-light: darken(#ffffff, 15%);
+$repo-tag-color: lighten($base-color, 10%);
 
+$grad-dark-start: transparentize($dark-color, 0.5);
+$grad-dark-end: transparentize($dark-color, 1);
