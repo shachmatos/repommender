@@ -11,16 +11,7 @@ from computation_service.models import *
 
 def get_channels(user_id: int):
     channel_picks_for_you = []
-
-    for recommendation in Recommendation.objects.filter(user_id=user_id, channel_type='u'):
-        channel_picks_for_you.append(format_repo_to_json(recommendation.target.__dict__, recommendation.score))
-
-    channels = [{
-        'title': 'Top Picks for you',
-        'source': user_id,
-        'channel_type': 'u',
-        'repositories': channel_picks_for_you
-    }]
+    channels = []
 
     repo_seed_ids = set()
 
@@ -44,12 +35,15 @@ def get_channels(user_id: int):
             channels.append({
                 'title': 'Because you\'re contributing to ' + source_repo.name,
                 'source': source_repo_d,
-                'channel_type': 'r',
                 'repositories': channel_recs
             })
 
+    for recommendation in Recommendation.objects.filter(user_id=user_id, channel_type='u'):
+        channel_picks_for_you.append(format_repo_to_json(recommendation.target.__dict__, recommendation.score))
+
     return {
         "user": user_id,
+        "picks_for_you": channel_picks_for_you,
         "channels": channels
     }
 
