@@ -15,6 +15,10 @@ from django.db import connection
 class Command(BaseCommand):
     def handle(self, *args, **options):
 
+        # if there are not users or repositories in the system then there is no need for recommendations
+        if Repository.objects.all().count() == 0 or User.objects.all().count() == 0:
+            return
+
         repos = Repository.objects.all()
         repositories_df = pd.DataFrame(list(repos.values()))
         repositories_df["topics"] = repositories_df["topics"].apply(ast.literal_eval)
@@ -22,10 +26,6 @@ class Command(BaseCommand):
 
         user_df = pd.DataFrame(list(User.objects.all().values()))
         user_repo_df = pd.DataFrame(list(UserRepository.objects.all().values()))
-
-        # if either of the data frames is empty stop the scripe.
-        if user_repo_df.size == 0 or repositories_df.size == 0:
-            return
 
         # merging with repo_db to get all topics for each user-repo relation
         intermediate_user_join = pd.merge(user_repo_df, repositories_df[["id", "topics"]], left_on="repo_id", right_on="id")

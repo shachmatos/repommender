@@ -26,10 +26,6 @@ def read_scanned_ids(path):
     return result
 
 
-def update_topics():
-    g = Github(client_id=GITHUB_CONFIG['client_id'], client_secret=GITHUB_CONFIG['client_secret'])
-
-
 def get_repositories(threshold, do_not_resume=False):
     g = Github(client_id=GITHUB_CONFIG['client_id'], client_secret=GITHUB_CONFIG['client_secret'])
 
