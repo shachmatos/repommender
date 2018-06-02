@@ -1,10 +1,8 @@
-import ast
-
-
 from django.http import HttpResponse
-import json
-
 from django.utils.encoding import smart_text
+
+import ast
+import json
 
 from computation_service.models import *
 
