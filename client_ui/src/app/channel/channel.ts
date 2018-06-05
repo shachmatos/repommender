@@ -19,12 +19,13 @@ export class Channel {
   }
 
   private onRepoSelected(repo: Repository) {
-    if (this.info_open) {
-
+    if (this.info_open && repo == this.selected_repo) {
+      this.info_open = false;
+    } else {
+      this.info_open = true;
     }
     this.selected.emit(this);
     this.selected_repo = repo;
-    this.info_open = true;
   }
 
   public sortByScore() {

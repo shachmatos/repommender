@@ -31,7 +31,7 @@ export class ChannelComponent implements OnInit {
   public config: PerfectScrollbarConfigInterface = {
     wheelPropagation: true,
     swipeEasing: true,
-    minScrollbarLength: 100
+    minScrollbarLength: 100,
   };
 
   constructor(private userService: UserService, private channelService: ChannelService) {

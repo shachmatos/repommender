@@ -1,9 +1,9 @@
-<div class="channel" *ngFor="let channel of channels" [perfectScrollbar]="config" style="position:relative;">
+<div class="channel" *ngFor="let channel of channels" style="position:relative;">
   <div class="channel-title">
     <h4 *ngIf="channel.source.url == null">{{channel.title}}</h4>
     <h4 *ngIf="channel.source.url != null">Because you're contributing to <a href="{{channel.source.url}}" target="_blank">{{channel.source.name}}</a></h4>
   </div>
-    <div class="channel-content" [perfectScrollbar]="config">
+    <div class="channel-content">
       <!--<a *ngFor="let repository of channel.repositories" href="{{repository.url}}" target="_blank" class="repository" [style.background-image]="'url('+repository.img+')'">-->
       <div *ngFor="let repository of channel.repositories" class="repository" [style.background-image]="'url('+repository.img+')'">
           <div class="repository-body" (click)="repository.selected.emit(repository)">
