@@ -20,18 +20,20 @@ import {PrefService} from "./pref.service";
 import {Ng4LoadingSpinnerModule, Ng4LoadingSpinnerService} from "ng4-loading-spinner";
 import {NgxSmartModalModule, NgxSmartModalService} from "ngx-smart-modal";
 import {ToastModule, ToastOptions, ToastsManager} from "ng2-toastr";
-
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
 const myRoots: Routes = [
   {
     path: '',
     component: HomeComponent
   },
-  // {
-  //   path: 'preferences',
-  //   component: UserPreferencesComponent
-  // }
 ];
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true
+};
 
 @NgModule({
   declarations: [
@@ -53,7 +55,9 @@ const myRoots: Routes = [
     FormsModule,
     Ng4LoadingSpinnerModule.forRoot(),
     TagInputModule,
-    ToastModule.forRoot()
+    ToastModule.forRoot(),
+    PerfectScrollbarModule
+
   ],
   exports: [
   ],
@@ -65,7 +69,12 @@ const myRoots: Routes = [
     Ng4LoadingSpinnerService,
     UserService,
     ToastsManager,
-    ToastOptions
+    ToastOptions,
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+    }
+
   ],
   bootstrap: [AppComponent]
 })

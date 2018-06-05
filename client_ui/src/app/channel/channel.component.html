@@ -1,5 +1,5 @@
 
-<div class="channel" *ngFor="let channel of channels">
+<div class="channel" *ngFor="let channel of channels" [perfectScrollbar]="config" style="position:relative;">
   <div class="channel-title">
     <h4 *ngIf="channel.source.url == null">{{channel.title}}</h4>
     <h4 *ngIf="channel.source.url != null">Because you're contributing to <a href="{{channel.source.url}}" target="_blank">{{channel.source.name}}</a></h4>
@@ -16,7 +16,7 @@
       </div>
     </div>
   </div>
-  <div class="channel-info container container-fluid" [@infoPanelOpen]="open_info_channel == channel && channel.info_open && channel.selected_repo" *ngIf="open_info_channel == channel && channel.info_open && channel.selected_repo != null">
+  <div class="channel-info container container-fluid" [perfectScrollbar]="config" [@infoPanelOpen]="open_info_channel == channel && channel.info_open && channel.selected_repo" *ngIf="open_info_channel == channel && channel.info_open && channel.selected_repo != null">
     <div class="row">
       <div class="col-4 left-panel">
         <h3>Quick Facts:</h3>
