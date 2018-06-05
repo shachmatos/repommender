@@ -12,6 +12,10 @@ from offline_calculator.models import Recommendation, Repository, UserRepository
 from django.db import connection
 
 
+def get_color_vec(color_vec, max_val, min_val):
+    return [min(min_val + float(i) / max(color_vec), max_val) for i in color_vec]
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
 
@@ -88,7 +92,7 @@ class Command(BaseCommand):
         # this batch calculates mixed-repo tf-idf similarities
         for idx, row in tqdm(joined_vectors.iterrows(), "User Results calculator"):
             # normalizing similarities
-            cosine_similarities_all_repo[idx] = [float(i) / max(cosine_similarities_all_repo[idx]) for i in cosine_similarities_all_repo[idx]]
+            cosine_similarities_all_repo[idx] = get_color_vec(cosine_similarities_all_repo[idx], 1, 0.5)
             # similar calculation to the done in repo-repo
             similar_indices = cosine_similarities_all_repo[idx].argsort()[::-1]
             similar_items = [(cosine_similarities_all_repo[idx][i], repositories_df['id'][i]) for i in similar_indices]
@@ -101,17 +105,27 @@ class Command(BaseCommand):
             if "repo" in k:
                 continue
             elif "default" in k:
-                user_results_with_int_keys["default"] = user_results[k]
+                user_results_with_int_keys[0] = user_results[k]
             else:
                 user_results_with_int_keys[int(k.replace("user", ""))] = user_results[k]
 
         with transaction.atomic():
+            result_picks_for_you = user_results_with_int_keys[0]
+            User.objects.update_or_create(id=0, login="default", avatar_url="")
+            # this part generates relation between the default user and each item of the top 30 picks
+            pick_for_you_count = 30
+            for pick in result_picks_for_you:
+                if pick_for_you_count < 1:
+                    break
+                pick_for_you_count -= 1
+                UserRepository.objects.update_or_create(user_id=0, repo_id=pick[1])
+
             r = []
             # for each user-repo relation create a recommendation for the repo recommendations
             # these are repo-repo recommendations with th user-repo score
             for user_repo in tqdm(UserRepository.objects.all()):  # type:UserRepository
                 for repo_for_user in repo_results[user_repo.repo_id]:
-                    # the default score is the one of tje repo-repo
+                    # the default score is the one of the repo-repo
                     score = repo_for_user[0]
                     for repo_score_by_user in user_results_with_int_keys[user_repo.user_id]:
                         # take the score (similarity) of the user-repo
@@ -134,16 +148,10 @@ class Command(BaseCommand):
                         break
                     pick_for_you_count -= 1
 
-                    # this part checks if we've reached the default user - if yes, then the id is set to 0
-                    user_id_int = user_id
-                    if user_id_int == "default":
-                        user_id_int = 0
-                        User.objects.update_or_create(id=0, login="default", avatar_url="")
-
                     r.append(
                         Recommendation(
-                            user_id=user_id_int,
-                            source=user_id_int,
+                            user_id=user_id,
+                            source=user_id,
                             target_id=pick[1],
                             score=pick[0],
                             channel_type='u'))

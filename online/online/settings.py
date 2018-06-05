@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'computation_service',
     'api',
-    'data_manager'
 ]
 
 MIDDLEWARE = [
