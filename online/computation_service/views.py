@@ -47,7 +47,7 @@ def get_channels(user_id: int):
     })
 
     return {
-        "user": user_id,
+        "user_id": user_id,
         "picks_for_you": channel_picks_for_you,
         "channels": channels
     }

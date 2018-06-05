@@ -13,7 +13,7 @@ from django.db import connection
 
 
 def get_color_vec(color_vec, max_val, min_val):
-    return [min(min_val + float(i) / max(color_vec), max_val) for i in color_vec]
+    return [min(min_val + i / max_val, max_val) for i in color_vec]
 
 
 class Command(BaseCommand):
