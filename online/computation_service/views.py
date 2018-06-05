@@ -10,7 +10,7 @@ from computation_service.models import *
 def get_channels(user_id: int):
     channel_picks_for_you = []
     channels = []
-    # user_id = 681420
+    user_id = 681420
     repo_seed_ids = set()
 
     for recommendation in Recommendation.objects.filter(user_id=user_id, channel_type='r'):
