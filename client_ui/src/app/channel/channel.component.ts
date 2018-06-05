@@ -64,7 +64,7 @@ export class ChannelComponent implements OnInit {
     let source_raw = raw_channel['source'];
     let channel = null;
     if (source_raw == undefined) {
-      channel = new Channel(user.id, "Picks for you", {});
+      channel = new Channel(user.id, "Top picks for you", {});
     } else {
       let source = new Repository(
         source_raw['id'],
@@ -83,7 +83,8 @@ export class ChannelComponent implements OnInit {
         source_raw['pushed_at'],
         source_raw['updated_at']
       );
-      channel = new Channel(user.id, "Picks for you", source);
+      let title = raw_channel['user_id'] == 0 ? 'More like ' : 'Because you\'re contributing to ';
+      channel = new Channel(user.id, title, source);
     }
     // let source = new Repository(source_raw['id'], source_raw['name'], source_raw['desc'], source_raw['url'], source_raw['topics']);
     for (let r of repos_raw) {
