@@ -5,6 +5,7 @@ import {User} from "../user";
 import {Channel} from "./channel";
 import {Repository} from "./repository";
 import {animate, keyframes, query, stagger, state, style, transition, trigger} from "@angular/animations";
+import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
 
 @Component({
   selector: 'app-channel',
@@ -27,7 +28,13 @@ export class ChannelComponent implements OnInit {
   channels : Array<Channel> = [];
   open_info_channel: Channel = null;
 
-  constructor(private userService: UserService, private channelService : ChannelService) {
+  public config: PerfectScrollbarConfigInterface = {
+    wheelPropagation: true,
+    swipeEasing: true,
+    minScrollbarLength: 100
+  };
+
+  constructor(private userService: UserService, private channelService: ChannelService) {
 
   }
 

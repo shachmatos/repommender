@@ -32,7 +32,7 @@ const myRoots: Routes = [
 ];
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true
+  wheelPropagation: true,
 };
 
 @NgModule({
