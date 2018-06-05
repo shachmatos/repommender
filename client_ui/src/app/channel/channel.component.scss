@@ -19,7 +19,7 @@
     -ms-overflow-style: -ms-autohiding-scrollbar;
 
     &:hover {
-      //overflow-x:auto;
+      overflow-x:auto;
     }
   }
 
@@ -89,6 +89,7 @@
 
     .repository-score {
       position:absolute;
+      text-shadow: 1px 1px #000;
       right: 5px;
       bottom: 0;
       padding: 5px;
@@ -101,7 +102,7 @@
     width: 100vw;
     //height: 360px;
     font-weight: lighter;
-    //overflow-y: scroll;
+    overflow-y: hidden;
     //padding: 23px;
     position: relative;
 
@@ -140,14 +141,6 @@
     }
 
   }
-}
-
-.scroll-container {
-  position: relative;
-}
-
-.scrollable-content {
-  position:relative;
 }
 
 

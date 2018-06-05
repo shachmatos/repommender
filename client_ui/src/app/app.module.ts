@@ -20,9 +20,8 @@ import {PrefService} from "./pref.service";
 import {Ng4LoadingSpinnerModule, Ng4LoadingSpinnerService} from "ng4-loading-spinner";
 import {NgxSmartModalModule, NgxSmartModalService} from "ngx-smart-modal";
 import {ToastModule, ToastOptions, ToastsManager} from "ng2-toastr";
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
-import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import {ScrollbarModule} from "ngx-scrollbar";
+import {CbjScrollbarModule} from "@codebyjordan/scrollbar";
 
 const myRoots: Routes = [
   {
@@ -30,10 +29,6 @@ const myRoots: Routes = [
     component: HomeComponent
   },
 ];
-
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  wheelPropagation: true,
-};
 
 @NgModule({
   declarations: [
@@ -56,8 +51,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     Ng4LoadingSpinnerModule.forRoot(),
     TagInputModule,
     ToastModule.forRoot(),
-    PerfectScrollbarModule
-
+    CbjScrollbarModule
   ],
   exports: [
   ],
@@ -70,11 +64,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     UserService,
     ToastsManager,
     ToastOptions,
-    {
-      provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-    }
-
   ],
   bootstrap: [AppComponent]
 })
