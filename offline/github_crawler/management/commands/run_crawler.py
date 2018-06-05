@@ -1,5 +1,6 @@
 import csv
 import errno
+import string
 import time
 
 from django.utils import dateparse
@@ -88,7 +89,7 @@ def get_repositories(threshold, do_not_resume=False):
                         'pushed_at': dateparse.parse_datetime(str(repo.pushed_at)),
                         'updated_at': dateparse.parse_datetime(str(repo.updated_at)),
                         'image': repo.owner.avatar_url,
-                        "description": smart_bytes(repo.description)
+                        "description": ''.join([x for x in repo.description if x in string.printable])
                     },
                     id=repo.id
                 )
