@@ -4,7 +4,7 @@
   <p>Hello</p>
   <button (click)="popuptwo.close()">Close</button>
 </ngx-smart-modal>
-<div *ngIf="!authenticated && !loading">
+<div *ngIf="!authenticated && !loading" style="background-color:white;">
   <app-jumbotron title="Repommender" subTitle="A Recommendation System for Developers" actionUrl="{{actionUrl}}" actionText="{{actionText}}"></app-jumbotron>
   <app-home-info></app-home-info>
 </div>

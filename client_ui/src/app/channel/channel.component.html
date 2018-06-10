@@ -5,7 +5,7 @@
   </div>
     <div class="channel-content">
       <!--<a *ngFor="let repository of channel.repositories" href="{{repository.url}}" target="_blank" class="repository" [style.background-image]="'url('+repository.img+')'">-->
-      <div *ngFor="let repository of channel.repositories" class="repository" [style.background-image]="'url('+repository.img+')'">
+      <div *ngFor="let repository of channel.repositories" class="repository repo-{{repository.id}}" [style.background-image]="'url('+repository.img+')'">
           <div class="repository-body" (click)="repository.selected.emit(repository)">
             <h5 class="repository-title">{{repository.name}}</h5>
             <p class="repository-description">{{repository.desc}}</p>
