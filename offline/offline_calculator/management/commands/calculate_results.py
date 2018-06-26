@@ -2,8 +2,10 @@ from django.core.management import BaseCommand
 
 import pandas as pd
 import ast
+import numpy as np
 
 from django.db import transaction
+from django.db.models import Avg, Count, Min, Sum
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
@@ -28,11 +30,13 @@ class Command(BaseCommand):
         repositories_df["topics"] = repositories_df["topics"].apply(ast.literal_eval)
         repositories_df["type"] = "repo"
 
-        user_df = pd.DataFrame(list(User.objects.all().values()))
+        u = User.objects.annotate(repo_count=Count('userrepository'))
+        user_df = pd.DataFrame(list(u.values()))
         user_repo_df = pd.DataFrame(list(UserRepository.objects.all().values()))
 
         # merging with repo_db to get all topics for each user-repo relation
-        intermediate_user_join = pd.merge(user_repo_df, repositories_df[["id", "topics"]], left_on="repo_id", right_on="id")
+        intermediate_user_join = pd.merge(user_repo_df, repositories_df[["id", "topics"]], left_on="repo_id",
+                                          right_on="id")
         user_vector_df = pd.DataFrame()
         # extracting the relevant fields only
         user_vector_df[["id", "repo_id", "topics"]] = intermediate_user_join[["user_id", "repo_id", "topics"]]
@@ -46,11 +50,14 @@ class Command(BaseCommand):
 
         # this is for differentiating the users from repos - they go into the same space
         user_vector_df["type"] = "user"
-        user_vector_df = pd.merge(user_vector_df, user_df[["id", "preferred_topics"]], on="id")
+        user_vector_df = pd.merge(user_vector_df, user_df[["id", "preferred_topics", "repo_count"]], on="id")
+        user_vector_df["preferred_topics_multiplier"] = user_vector_df["repo_count"].apply(lambda x: max(int(np.log2(x)), 1))
 
         # dealing with None values in preferred topics
-        user_vector_df["preferred_topics"] = user_vector_df["preferred_topics"].apply(lambda x: ast.literal_eval(x) if x is not None else [])
-        user_vector_df["topics"] = user_vector_df["topics"] + user_vector_df["preferred_topics"]
+        user_vector_df["preferred_topics"] = user_vector_df["preferred_topics"].apply(
+            lambda x: ast.literal_eval(x) if x is not None else [])
+        user_vector_df["topics"] = user_vector_df["topics"] + \
+                                   (user_vector_df["preferred_topics"] * user_vector_df["preferred_topics_multiplier"])
 
         # removing the preferred_topics - after adding it into topics
         user_vector_df = user_vector_df.drop(columns=['preferred_topics', ])
